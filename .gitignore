@@ -1,0 +1,49 @@
+# C++ build artifacts
+*.o
+*.obj
+*.slo
+*.lo
+*.a
+*.lib
+*.so
+*.dll
+*.exe
+*.out
+*.app
+*.d
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Fortran module files (often used in C++ projects)
+*.mod
+*.smod
+
+# Arduino build files
+build/
+*.elf
+*.eep
+*.hex
+*.bin
+*.lss
+*.lst
+*.map
+*.sym
+
+# Arduino libraries
+/libraries/
+
+# Visual Studio / Visual Micro specific files
+*.suo
+*.user
+*.vcxproj.filters
+*.vcxproj.user
+_vm/
+*.vsarduino.h
+Release/
+Debug/
+
+# Other
+.DS_Store
+Thumbs.db
