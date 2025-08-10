@@ -36,25 +36,25 @@ The diagram below shows the detailed call stack for a single iteration of the ma
 
 ```mermaid
 graph TD
-    A[main::loop()] --> B[RobotController::runControlLoop];
+    A["main::loop()"] --> B["RobotController::runControlLoop"];
 
-    subgraph RobotController
-        B --> C[Gamepad_update];
-        C --> D[JoystickProcessor::process];
-        D --> E[Loop 3x for each module];
-        E --> F[DiffSwerveModule::updateAndGetCurrentState];
-        F --> G[RobotController::calculateDesiredModuleState];
-        G --> H[DiffSwerveModule::updateControl];
+    subgraph "RobotController"
+        B --> C["Gamepad_update"];
+        C --> D["JoystickProcessor::process"];
+        D --> E["Loop 3x for each module"];
+        E --> F["DiffSwerveModule::updateAndGetCurrentState"];
+        F --> G["RobotController::calculateDesiredModuleState"];
+        G --> H["DiffSwerveModule::updateControl"];
     end
 
-    subgraph DiffSwerveModule
-        F --> I[ModuleSensors::updateAndGetCurrentState];
-        H --> J[PID::Compute];
-        J --> K[setVoltages via Serial];
+    subgraph "DiffSwerveModule"
+        F --> I["ModuleSensors::updateAndGetCurrentState"];
+        H --> J["PID::Compute"];
+        J --> K["setVoltages via Serial"];
     end
 
-    subgraph ModuleSensors
-        I --> L[ESP32Encoder::getCount];
+    subgraph "ModuleSensors"
+        I --> L["ESP32Encoder::getCount"];
     end
 ```
 
