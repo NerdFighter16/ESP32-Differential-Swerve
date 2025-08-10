@@ -8,7 +8,7 @@ The differential swerve drive uses two motors per module to simultaneously contr
 
 *   **Holonomic Drivetrain**: Allows the robot to move and rotate in any direction simultaneously.
 *   **Bluetooth Gamepad Control**: Uses the `Bluepad32` library for wireless control with modern gamepads (PS4, Xbox, etc.).
-*   **PID Control**: Each module uses PID controllers for precise azimuth and wheel speed management. The code also includes commented-out structures for LQR control.
+*   **Switchable Control Schemes**: The firmware is designed to toggle between a robust PID controller and a more advanced LQR (Linear-Quadratic Regulator) controller. This allows for on-the-fly performance adjustments directly from the gamepad.
 *   **Shooter & Defense Mechanism**: Equipped with a variable-speed flywheel shooter and an adjustable hood.
 *   **Modular Code**: Organized into logical classes for the robot controller, swerve modules, joystick input, and sensors.
 
@@ -27,8 +27,36 @@ The differential swerve drive uses two motors per module to simultaneously contr
 *   `JoystickProcessor`: Processes raw gamepad input into clean, rate-limited robot velocity commands.
 *   `ModuleSensors`: Reads and processes encoder data.
 *   `shooter`: Controls the flywheel, hood, and other shooter functions.
-*   `Config.h`: **Crucial configuration file.** All hardware pin assignments, gear ratios, and PID gains are here.
+*   `Config.h`: **Crucial configuration file.** All hardware pin assignments, gear ratios, and PID/LQR gains are here.
 *   `Utils.h`: Helper functions for vector math, angle wrapping, etc.
+
+## Control Flow
+
+The diagram below shows the detailed call stack for a single iteration of the main control loop.
+
+```mermaid
+graph TD
+    A[main::loop()] --> B[RobotController::runControlLoop];
+
+    subgraph RobotController
+        B --> C[Gamepad_update];
+        C --> D[JoystickProcessor::process];
+        D --> E[Loop 3x for each module];
+        E --> F[DiffSwerveModule::updateAndGetCurrentState];
+        F --> G[RobotController::calculateDesiredModuleState];
+        G --> H[DiffSwerveModule::updateControl];
+    end
+
+    subgraph DiffSwerveModule
+        F --> I[ModuleSensors::updateAndGetCurrentState];
+        H --> J[PID::Compute];
+        J --> K[setVoltages via Serial];
+    end
+
+    subgraph ModuleSensors
+        I --> L[ESP32Encoder::getCount];
+    end
+```
 
 ## Setup
 
